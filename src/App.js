@@ -1,33 +1,39 @@
 import React, { Component } from 'react';
-import { Input, Label, Button } from 'reactstrap';
-import logo from './logo.svg';
+import { Button } from 'reactstrap';
 import './App.css';
 import Axios from 'axios';
 import { API_URL } from './support/API_URL';
 import {connect} from 'react-redux';
+import { Login } from './redux/actions'
 
 
 class App extends Component{
 
-  register = () => {
+  // register = () => {
+  //   let username = this.refs.username.value;
+  //   let email = this.refs.email.value;
+  //   let password = this.refs.password.value;
+  //   let confirmPass = this.refs.confirm.value;
+  //   if(password === confirmPass){
+  //     Axios.post(API_URL + `/users/register`, {
+  //       username,
+  //       password,
+  //       email
+  //     })
+  //     .then((res) => {
+  //       console.log(res)
+  //       console.log(res.data)
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  //   }
+  // }
+
+  onBtnLogIn = () => {
     let username = this.refs.username.value;
-    let email = this.refs.email.value;
     let password = this.refs.password.value;
-    let confirmPass = this.refs.confirm.value;
-    if(password === confirmPass){
-      Axios.post(API_URL + `/users/register`, {
-        username,
-        password,
-        email
-      })
-      .then((res) => {
-        console.log(res)
-        console.log(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
+    this.props.Login(username, password)
   }
 
   render(){
@@ -55,4 +61,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, { Login })(App);
