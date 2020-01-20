@@ -24,3 +24,29 @@ export const Login = (username, password) => {
         })
     }
 }
+
+export const keepLogin = () => {
+    return(dispatch) => {
+        const token = localStorage.getItem('token');
+        console.log(token);
+        if(token){
+            const headers = {
+                headers : {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+            Axios.post(API_URL + '/users/keeplogin', {}, headers)
+            .then((res) => {
+                dispatch({
+                    type: 'LOGIN',
+                    payload: res.data
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: 'LOGOUT'
+                })
+            })
+        }
+    }
+}

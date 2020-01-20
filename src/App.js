@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, CustomInput } from 'reactstrap';
 import './App.css';
 import Axios from 'axios';
 import { API_URL } from './support/API_URL';
 import {connect} from 'react-redux';
-import { Login } from './redux/actions'
+import { Login, keepLogin } from './redux/actions'
 
 
 class App extends Component{
+  state = {
+    addImageFileName : 'Select File',
+    addImageFile: undefined
+  }
+  
+  componentDidMount(){
+    let { keepLogin } = this.props;
+    keepLogin()
+  }
 
   // register = () => {
   //   let username = this.refs.username.value;
@@ -36,8 +45,33 @@ class App extends Component{
     this.props.Login(username, password)
   }
 
+  onBtnAddImageFile = (e) => {
+    if(e.target.files[0]){
+        this.setState({ addImageFileName: e.target.files[0].name, addImageFile : e.target.files[0] })
+    }else{
+        this.setState({ addImageFileName : 'Select Image', addImageFile : undefined })
+    }
+}
+
+uploadImage = () => {
+  let { addImageFile } = this.state;
+  if(addImageFile){
+    let formData = new FormData()
+    formData.append('image', addImageFile)
+    Axios.post(API_URL+'/image/upload', formData)
+    .then((res) => {
+      console.log(res.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    
+  }
+}
+
   render(){
     console.log(this.props.user)
+    // console.log(this.state.addImageFile)
     return(
       <div className='container'>
         <div className='d-flex justify-content-center'>
@@ -50,6 +84,10 @@ class App extends Component{
             </div>
             </form>
         </div>
+        {/* <CustomInput onChange={this.onBtnAddImageFile} label={this.state.addImageFileName} type='file'/> */}
+        <Button onClick={this.uploadImage}>
+          Upload 
+        </Button>
       </div>
     )
   }
@@ -61,4 +99,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, { Login })(App);
+export default connect(mapStateToProps, { Login, keepLogin })(App);
